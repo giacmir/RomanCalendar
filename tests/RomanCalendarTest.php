@@ -4,6 +4,12 @@ require_once("../RomanCalendar.php");
 
 class RomanCalendarTest extends PHPUnit_Framework_TestCase {
 
+	protected $_timezone;
+
+	public function setUp(){
+		$this->_timezone = new DateTimeZone('UTC');
+	}
+
 	public function testGetYearTime(){
 		$date = '2012-12-20';
 		$this->assertEquals(RomanCalendar::TIME_ADVENT, RomanCalendar::getYearTime($date),'failed advent test');
@@ -39,12 +45,37 @@ class RomanCalendarTest extends PHPUnit_Framework_TestCase {
 	public function testGetAshWednesday(){
 		$this->assertEquals(3, RomanCalendar::getAshWednesday()->format('w'),'is not a wednesday');
 
-		$date = new DateTime('2013-02-13',new DateTimeZone('UTC'));
+		$date = new DateTime('2013-02-13',$this->_timezone);
 		$wed = RomanCalendar::getAshWednesday(2013);
 
 
 		$interval = $date->diff($wed);
 		$this->assertEquals(0, $interval->days,'wrong day');
 
+	}
+
+	public function testGetAdventSundays(){
+		$sundays = array(
+			new DateTime('2012-12-02',$this->_timezone),
+			new DateTime('2012-12-09',$this->_timezone),
+			new DateTime('2012-12-16',$this->_timezone),
+			new DateTime('2012-12-23',$this->_timezone)
+		);
+
+		$tested = RomanCalendar::getAdventSundays(2012);
+
+		$this->assertTrue(count(RomanCalendar::getAdventSundays()) == 4);
+
+		foreach($sundays as $key=>$sun){
+			$this->assertEquals($sun->getTimestamp(), $tested[$key]->getTimestamp());
+		}
+
+
+	}
+
+	public function testGetAdventStart(){
+		$start = new DateTime('2012-12-02',$this->_timezone);
+
+		$this->assertEquals($start->getTimestamp(), RomanCalendar::getAdventStart(2012)->getTimestamp());
 	}
 }

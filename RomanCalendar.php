@@ -217,7 +217,8 @@ class RomanCalendar {
 
 			for($i=1;$i<4;$i++){
 				$interval = new DateInterval("P7D");
-				$sundays[$i] = $sundays[$i-1]->sub($interval);
+				$new = static::_getDateTimeObject("@".$sundays[$i-1]->getTimestamp());
+				$sundays[$i] = $new->sub($interval);
 			}
 
 			return array_reverse($sundays);
@@ -257,7 +258,7 @@ class RomanCalendar {
 	public static function getAdventLength($year=null){
 		try {
 			$year = static::_getYear($year);
-			$christmas = static::_getDateTimeObject("$year-12-15");
+			$christmas = static::_getDateTimeObject("$year-12-25");
 			$firstSunday = static::getAdventStart($year);
 
 			$interval = $firstSunday->diff($christmas);
