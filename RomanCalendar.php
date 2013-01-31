@@ -3,7 +3,7 @@
  * A PHP class to get informations about the Liturgical Roman Calendar
  * @author Giacomo Mirabassi <giacomo@mirabassi.it>
  * @license GNU/GPL version 3 or later
- *
+ * @version 0.1.1
  */
 class RomanCalendar {
 
