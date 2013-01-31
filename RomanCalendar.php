@@ -3,7 +3,7 @@
  * A PHP class to get informations about the Liturgical Roman Calendar
  * @author Giacomo Mirabassi <giacomo@mirabassi.it>
  * @license GNU/GPL version 3 or later
- * @version 0.1.1
+ * @version 0.2
  */
 class RomanCalendar {
 
@@ -315,6 +315,91 @@ class RomanCalendar {
 
 			return $interval->days;
 
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+	/**
+	 * Get the sunday after Ascention
+	 * @param integer $year
+	 * @throws Exception
+	 * @return DateTime
+	 */
+	public static function getAscention($year=null){
+		try {
+			$year = static::_getYear($year);
+
+			$easter = static::getEasterDate($year);
+			$toAscention = new DateInterval("P43D");
+			return $easter->add($toAscention);
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+	/**
+	 * get the pentecost sunday for the given year
+	 * @param integer $year
+	 * @throws Exception
+	 * @return DateTime
+	 */
+	public static function getPentecost($year=null){
+		try {
+			$ascention = static::getAscention($year);
+			$diff = new DateInterval("P7D");
+
+			return $ascention->add($diff);
+
+		} catch (Exception $e) {
+			throw $e;
+		}
+
+	}
+
+	/**
+	 * Gets the ordinary time week of a given date or false if is not in ordinary time
+	 * @param mixed $date
+	 * @throws Exception
+	 * @return boolean|integer
+	 */
+	public static function getOrdinaryWeek($date){
+		try {
+			$date = static::_getDateTimeObject($date);
+
+
+			$time = static::getYearTime($date);
+			if($time != static::TIME_ORDINARY){
+				return false;
+			}
+			else {
+
+				$first = static::getChristmasTimeEnd($date->format('Y'));
+				$fromFirst = $first->diff($date);
+
+				if($fromFirst->days < 7){
+					return 1; //first ordiinary and last Christmas are the same
+				}
+				$ash = static::getAshWednesday($date->format('Y'));
+
+				if($ash->diff($date)->invert == 1){
+					return intval(($first->diff($date)->days/7)+1);
+				}
+				else {
+					$ashTosun = new DateInterval("P".$ash->format('w')."D");
+					$ashTosun->invert = 1;
+					$lastSunday = $ash->sub($ashTosun);
+
+					$beforeAsh = ($first->diff($ash)->days/7)+1;
+
+					$pentecost = static::getPentecost($date->format('Y'));
+
+					return intval(($pentecost->diff($date)->days/7)+1+$beforeAsh);
+
+
+
+				}
+			}
 		} catch (Exception $e) {
 			throw $e;
 		}

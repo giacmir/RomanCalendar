@@ -76,6 +76,47 @@ class RomanCalendarTest extends PHPUnit_Framework_TestCase {
 	public function testGetAdventStart(){
 		$start = new DateTime('2012-12-02',$this->_timezone);
 
-		$this->assertEquals($start->getTimestamp(), RomanCalendar::getAdventStart(2012)->getTimestamp());
+		$this->assertEquals($start->getTimestamp(), RomanCalendar::getAdventStart(2012)->getTimestamp(),'wrong day');
+
+		$this->assertEquals(0, RomanCalendar::getAdventStart()->format('w'),'not a sunday');
+	}
+
+	public function testGetChristmasTimeEnd(){
+		$this->assertEquals(0, RomanCalendar::getChristmasTimeEnd()->format('w'),'not a sunday');
+	}
+
+	public function testgetAscention(){
+		$this->assertEquals(0, RomanCalendar::getAscention()->format('w'),'not a sunday');
+
+		$ascention = new DateTime('2013-05-12',$this->_timezone);
+
+		$this->assertEquals($ascention->format('d-m-y'), RomanCalendar::getAscention(2013)->format('d-m-y'),'wrong day');
+	}
+
+	public function testGetPentecost(){
+		$this->assertEquals(0, RomanCalendar::getPentecost()->format('w'),'not a sunday');
+
+		$pentecost = new DateTime('2013-05-19',$this->_timezone);
+
+		$this->assertEquals($pentecost->format('d-m-y'), RomanCalendar::getPentecost(2013)->format('d-m-y'),'wrong day');
+	}
+
+	public function testGetOrdinaryWeek(){
+		$date = new DateTime('2013-01-30',$this->_timezone);
+
+		$this->assertTrue(is_int(RomanCalendar::getOrdinaryWeek($date)),'not an integer');
+		$this->assertEquals(3, RomanCalendar::getOrdinaryWeek($date),'wrong week count');
+
+		$date = new DateTime('2013-02-20',$this->_timezone);
+		$this->assertFalse(RomanCalendar::getOrdinaryWeek($date));
+
+		$date = new DateTime('2013-12-25',$this->_timezone);
+		$this->assertFalse(RomanCalendar::getOrdinaryWeek($date));
+
+		$date = new DateTime('2013-02-11',$this->_timezone);
+		$this->assertEquals(5, RomanCalendar::getOrdinaryWeek($date),'wrong week count');
+
+		$date = new DateTime('2013-05-21',$this->_timezone);
+		$this->assertEquals(7, RomanCalendar::getOrdinaryWeek($date),'wrong week count');
 	}
 }
