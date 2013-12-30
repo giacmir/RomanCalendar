@@ -3,7 +3,7 @@
  * A PHP class to get informations about the Liturgical Roman Calendar
  * @author Giacomo Mirabassi <giacomo@mirabassi.it>
  * @license GNU/GPL version 3 or later
- * @version 0.2
+ * @version 0.2.1
  */
 class RomanCalendar {
 
@@ -59,13 +59,15 @@ class RomanCalendar {
 			else if($date->format('m')>9){
 				$advent = static::getAdventLength($year);
 				$christmas = static::_getDateTimeObject("$year-12-25");
+				$lastDay = static::_getDateTimeObject("$year-12-31");
+				$lastDayInterval = $lastDay->diff($date);
 				$adventInterval = $christmas->diff($date);
 
-				if($adventInterval->days === 0){
+				if($date >= $christmas && $date <= $lastDay){
 					return static::TIME_CHRISTMAS;
 				}
 
-				if($adventInterval->days <= $advent && $adventInterval->invert = 1){
+				if($adventInterval->days <= $advent && $adventInterval->invert == 1){
 					return static::TIME_ADVENT;
 				}
 			}
@@ -386,15 +388,12 @@ class RomanCalendar {
 					return intval(($first->diff($date)->days/7)+1);
 				}
 				else {
-					$ashTosun = new DateInterval("P".$ash->format('w')."D");
-					$ashTosun->invert = 1;
-					$lastSunday = $ash->sub($ashTosun);
 
-					$beforeAsh = ($first->diff($ash)->days/7)+1;
+					$beforeAsh = intval(($first->diff($ash)->days/7)+1);
 
 					$pentecost = static::getPentecost($date->format('Y'));
 
-					return intval(($pentecost->diff($date)->days/7)+1+$beforeAsh);
+					return intval(($pentecost->diff($date)->days/7)+2+$beforeAsh); //+2 because there is always an "empty" week in between
 
 
 

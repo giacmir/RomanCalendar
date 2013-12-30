@@ -18,7 +18,11 @@ class RomanCalendarTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(RomanCalendar::TIME_CHRISTMAS, RomanCalendar::getYearTime($date),'failed christmas test');
 
 		$date = '2012-12-25';
-		$this->assertEquals(RomanCalendar::TIME_CHRISTMAS, RomanCalendar::getYearTime($date),'failed christmas day test');
+		$this->assertEquals(RomanCalendar::TIME_CHRISTMAS, RomanCalendar::getYearTime($date),'failed christmas day old year test');
+
+		$date = '2012-12-30';
+		$this->assertEquals(RomanCalendar::TIME_CHRISTMAS, RomanCalendar::getYearTime($date),'failed christmas day new year test');
+
 
 		$date = '2013-01-13';
 		$this->assertEquals(RomanCalendar::TIME_CHRISTMAS, RomanCalendar::getYearTime($date),'failed last day of christmas test');
