@@ -1,12 +1,13 @@
 <?php
-require_once("../vendor/autoload.php");
-require_once("../RomanCalendar.php");
+require_once(__DIR__ . "/../vendor/autoload.php");
+require_once(__DIR__ . "/../RomanCalendar.php");
 
-class RomanCalendarTest extends PHPUnit_Framework_TestCase {
+class RomanCalendarTest extends \PHPUnit\Framework\TestCase {
 
 	protected $_timezone;
 
-	public function setUp(){
+	public function setUp() : void
+    {
 		$this->_timezone = new DateTimeZone('UTC');
 	}
 
